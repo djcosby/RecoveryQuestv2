@@ -19,6 +19,7 @@ import { PracticeTab } from './components/tabs/PracticeTab';
 import { AdminCurriculumTools } from './components/admin/AdminCurriculumTools';
 import { AuthScreen } from './components/AuthScreen';
 import { Narrator } from './components/guide/Narrator';
+import { CommandCenterApp } from './CommandCenter/CommandCenterApp';
 
 import { CheckInModal } from './components/modals/CheckInModal';
 import { LessonRenderer } from './components/education/LessonRenderer';
@@ -64,12 +65,17 @@ function AppContent() {
   const [showCelebration, setShowCelebration] = useState<{ title: string; subtitle: string } | null>(null);
   const [personalityProfile, setPersonalityProfile] = useState<PersonalityProfile | null>(null);
   const [showAdmin, setShowAdmin] = useState(false);
+  const [showCommandCenter, setShowCommandCenter] = useState(false);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
         e.preventDefault();
         setShowAdmin((prev) => !prev);
+      }
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'c') {
+        e.preventDefault();
+        setShowCommandCenter((prev) => !prev);
       }
     };
     window.addEventListener('keydown', handler);
@@ -140,6 +146,15 @@ function AppContent() {
         <Activity size={28} />
       </button>
 
+      {/* Staff Portal button — launches Command Center */}
+      <button
+        onClick={() => setShowCommandCenter(true)}
+        title="Open Staff Command Center (Ctrl+Shift+C)"
+        className="fixed bottom-6 left-6 z-[60] bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 hover:text-white rounded-full px-3 py-2 shadow-xl text-xs font-semibold flex items-center gap-1.5 transition-all"
+      >
+        <SettingsIcon size={14} /> Staff Portal
+      </button>
+
       {showCheckIn && <CheckInModal onClose={() => setShowCheckIn(false)} onComplete={() => { addXP(10); setShowCheckIn(false); }} />}
       
       {activeLesson && (
@@ -159,6 +174,10 @@ function AppContent() {
         <div className="fixed inset-0 z-[120] bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
           <AdminCurriculumTools />
         </div>
+      )}
+
+      {showCommandCenter && (
+        <CommandCenterApp onClose={() => setShowCommandCenter(false)} />
       )}
     </div>
   );
